@@ -10,7 +10,7 @@ export default function NavBar() {
   return (
     <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-200/80 transition-all">
       <nav className="max-w-7xl mx-auto px-5 lg:px-12 h-16 flex justify-between items-center">
-        {/* 1️⃣ Brand Logo */}
+        {/* 1️Brand Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:bg-blue-700 transition duration-200">
             <Activity className="w-5 h-5" />
@@ -20,7 +20,7 @@ export default function NavBar() {
           </span>
         </Link>
 
-        {/* 2️⃣ Nav Links */}
+        {/* Nav Links */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium">
           <Link
             href="/about"
@@ -42,7 +42,7 @@ export default function NavBar() {
           </Link>
         </div>
 
-        {/* 3️⃣ Auth Action Buttons */}
+        {/* Auth Action Buttons */}
         <div className="flex items-center gap-3">
           {user ? (
             <Link
