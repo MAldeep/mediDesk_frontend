@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 const ADMIN_ROUTES = ["/admin"];
 const DOCTOR_ROUTES = ["/doctor"];
 const STAFF_ROUTES = ["/staff"];
-const AUTH_ROUTES = ["/login"];
+const AUTH_ROUTES = ["/login", "/register"];
 
 const JWT_SECRET_ACCESS = new TextEncoder().encode(
   process.env.JWT_ACCESS_SECRET,
