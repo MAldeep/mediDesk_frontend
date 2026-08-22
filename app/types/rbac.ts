@@ -1,18 +1,33 @@
-export type Role = "admin" | "doctor" | "staff";
+export type Role = "Admin" | "Doctor" | "Staff";
 
-export type AppointmentPermissions =
-  | "appointment:read"
-  | "appointment:add"
-  | "appointment:update"
-  | "appointment:delete";
+export type Permission =
+  // Appointments
+  | "read:appointment"
+  | "create:appointment"
+  | "delete:appointment"
+  | "update:appointment"
+  // Patients
+  | "read:patient"
+  | "create:patient"
+  | "update:patient"
+  | "delete:patient";
 
-export const Role_Permissions: Record<Role, AppointmentPermissions[]> = {
-  admin: [
-    "appointment:read",
-    "appointment:add",
-    "appointment:update",
-    "appointment:delete",
+export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
+  Admin: [
+    "read:appointment",
+    "create:appointment",
+    "delete:appointment",
+    "update:appointment",
+    "read:patient",
+    "create:patient",
+    "update:patient",
+    "delete:patient",
   ],
-  staff: ["appointment:read", "appointment:add", "appointment:update"],
-  doctor: ["appointment:read"],
+  Doctor: ["read:appointment", "read:patient", "update:patient"],
+  Staff: [
+    "read:appointment",
+    "create:appointment",
+    "update:appointment",
+    "create:patient",
+  ],
 };
