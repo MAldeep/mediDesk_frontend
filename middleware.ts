@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
 
   // in case of authenticated and trying to open auth route
   if (isAuthenticated && isAuthRoute) {
-    return NextResponse.redirect(new URL("/appointments", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   const isAdminRoute = ADMIN_ROUTES.some((route) => pathname.startsWith(route));
