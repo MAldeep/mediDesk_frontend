@@ -14,3 +14,5 @@ export const useAuthStore = create<AuthStore>()((set) => ({
   setAuth: (user: User, accessToken: string) => set({ user, accessToken }),
   clearAuth: () => set({ user: null, accessToken: null }),
 }));
+export const useIsAuthenticated = () =>
+  useAuthStore((state) => Boolean(state.user && state.accessToken));

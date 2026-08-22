@@ -3,19 +3,15 @@
 import { useIsMounted } from "@/app/hooks/useIsMounted";
 import { useIsAuthenticated } from "@/app/stores/useAuthStore";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
-export default function GuestGuard({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useIsAuthenticated();
   const router = useRouter();
   const isMounted = useIsMounted();
   useEffect(() => {
-    if (isMounted && isAuthenticated) {
-      router.replace("/dashboard");
+    if (isMounted && !isAuthenticated) {
+      router.replace("/login");
     }
   }, [isAuthenticated, isMounted, router]);
   if (!isMounted || !isAuthenticated) {
