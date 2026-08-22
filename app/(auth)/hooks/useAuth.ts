@@ -19,12 +19,9 @@ export const useAuth = () => {
   });
   const loginMutation = useMutation({
     mutationFn: (data: LoginType) => authServices.login(data),
-    onSuccess: async () => {
-      if (loginMutation.data) {
-        const user: AuthResponse = loginMutation.data;
-        await useAuthStore.getState().setAuth(user.data.user, user.accessToken);
-        router.replace("/dashboard");
-      }
+    onSuccess: async (data: AuthResponse) => {
+      await useAuthStore.getState().setAuth(data.data.user, data.accessToken);
+      router.replace("/dashboard");
     },
   });
   return {
