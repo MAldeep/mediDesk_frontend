@@ -18,7 +18,7 @@ export default function GuestGuard({
       router.replace("/dashboard");
     }
   }, [isAuthenticated, isMounted, router]);
-  if (!isMounted || !isAuthenticated) {
+  if (!isMounted || isAuthenticated) {
     return null;
   }
   return <>{children}</>;
