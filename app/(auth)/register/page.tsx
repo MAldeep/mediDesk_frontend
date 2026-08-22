@@ -5,7 +5,6 @@ export default function Register() {
   return (
     <div className="w-full min-h-screen bg-slate-50 flex flex-col justify-between">
       <NavBar />
-
       <main className="flex-1 flex items-center justify-center p-4 sm:p-6 my-8">
         <div className="w-full max-w-md space-y-6">
           {/* Header Text */}
@@ -17,7 +16,6 @@ export default function Register() {
               Get started with MediDesk clinic management
             </p>
           </div>
-
           {/* Form Card */}
           <RegisterForm />
         </div>
