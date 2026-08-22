@@ -1,11 +1,11 @@
-import { AppointmentPermissions, Role } from "./rbac";
+import { Permission, Role } from "./rbac";
 
 export interface User {
   id: string;
   name: string;
   email: string;
   role: Role;
-  permissions?: AppointmentPermissions[];
+  permissions?: Permission[];
 }
 
 export interface AuthResponse {
