@@ -26,10 +26,12 @@ export async function middleware(request: NextRequest) {
 
   const isAuthenticated = Boolean(refreshToken || accessToken);
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
-
+  const payload = accessToken ? await getJwtPayload(accessToken) : null;
+  const userRole = payload?.role;
   // in case of authenticated and trying to open auth route
   if (isAuthenticated && isAuthRoute) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    const targetPath = userRole ? `/dashboard/${userRole}` : "/dashboard";
+    return NextResponse.redirect(new URL(targetPath, request.url));
   }
 
   const isAdminRoute = ADMIN_ROUTES.some((route) => pathname.startsWith(route));
@@ -52,20 +54,23 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (isProtectedRoute && accessToken) {
-    const payload = await getJwtPayload(accessToken);
-    const userRole = payload?.role;
-
+  if (isProtectedRoute && userRole) {
     if (isAdminRoute && userRole !== "admin") {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(
+        new URL(`/dashboard/${userRole}`, request.url),
+      );
     }
 
     if (isDoctorRoute && userRole !== "doctor" && userRole !== "admin") {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(
+        new URL(`/dashboard/${userRole}`, request.url),
+      );
     }
 
     if (isStaffRoute && userRole !== "staff" && userRole !== "admin") {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(
+        new URL(`/dashboard/${userRole}`, request.url),
+      );
     }
   }
   return NextResponse.next();
