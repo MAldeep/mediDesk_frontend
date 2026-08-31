@@ -14,26 +14,41 @@ export default function AuthProvider({
   const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const initAuth = async () => {
       try {
         const response = await api.get("/auth/me");
         const user = response.data?.data?.user || response.data?.user;
-        const accessToken =
-          response.data?.data?.accessToken || response.data?.accessToken;
-        if (user) {
-          setAuth(user, accessToken);
-        } else {
-          clearAuth();
+
+        const currentToken = useAuthStore.getState().accessToken;
+
+        if (isMounted) {
+          if (user && currentToken) {
+            setAuth(user, currentToken);
+          } else if (user) {
+            useAuthStore.setState({ user });
+          } else {
+            clearAuth();
+          }
         }
       } catch (error) {
-        clearAuth();
+        if (isMounted) {
+          clearAuth();
+        }
       } finally {
-        setIsInitializing(false);
+        if (isMounted) {
+          setIsInitializing(false);
+        }
       }
     };
 
     initAuth();
-  }, [setAuth, clearAuth]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   if (isInitializing) {
     return (

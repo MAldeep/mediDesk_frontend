@@ -11,6 +11,7 @@ export const publicApi = axios.create({
     "Content-Type": "application/json",
   },
 });
+
 export const api = axios.create({
   baseURL: API_URL,
   timeout: 5000,
@@ -23,11 +24,17 @@ export const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().accessToken;
+
     if (config.headers) {
-      const isPublicEndPoit = config.url?.includes("/auth");
-      if (token && !isPublicEndPoit) {
+      const isPublicAuthRoute =
+        config.url?.includes("/auth/login") ||
+        config.url?.includes("/auth/register") ||
+        config.url?.includes("/auth/refresh-token");
+
+      if (token && !isPublicAuthRoute) {
         config.headers.Authorization = `Bearer ${token}`;
       }
+
       config.headers["X-App-Version"] = "1.0.0";
     }
     return config;
@@ -56,12 +63,17 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalReq = error.config;
-    if (
-      error.response?.status === 401 &&
-      !originalReq._retry &&
-      !originalReq.url?.includes("/auth/refresh-token")
-    ) {
-      // isRefreshing == true
+
+    const isAuthRequest =
+      originalReq.url?.includes("/auth/login") ||
+      originalReq.url?.includes("/auth/register") ||
+      originalReq.url?.includes("/auth/refresh-token");
+
+    if (error.response?.status === 401 && isAuthRequest) {
+      return Promise.reject(error);
+    }
+
+    if (error.response?.status === 401 && !originalReq._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -70,29 +82,35 @@ api.interceptors.response.use(
             originalReq.headers.Authorization = `Bearer ${newToken}`;
             return api(originalReq);
           })
-          .catch((error) => Promise.reject(error));
+          .catch((err) => Promise.reject(err));
       }
-      // isRefreshing == false
+
       originalReq._retry = true;
       isRefreshing = true;
+
       try {
         const response = await publicApi.post("/auth/refresh-token");
-        const { user, accessToken } = response.data;
+
+        const accessToken =
+          response.data?.accessToken || response.data?.data?.accessToken;
+        const user = response.data?.user || response.data?.data?.user;
+
         useAuthStore.getState().setAuth(user, accessToken);
+
         originalReq.headers.Authorization = `Bearer ${accessToken}`;
         processQueue(null, accessToken);
+
         return api(originalReq);
-      } catch (error) {
-        processQueue(error, null);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
         useAuthStore.getState().clearAuth();
-        if (typeof window !== "undefined") {
-          window.location.href = "/login";
-        }
-        return Promise.reject(error);
+
+        return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
       }
     }
+
     return Promise.reject(error);
   },
 );
