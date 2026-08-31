@@ -41,7 +41,7 @@ async function refreshAccessToken(refreshToken: string) {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   let accessToken = request.cookies.get("accessToken")?.value;
-  const refreshToken = request.cookies.get("RefreshToken")?.value;
+  const refreshToken = request.cookies.get("refreshToken")?.value;
 
   let payload = accessToken ? await getJwtPayload(accessToken) : null;
   let response = NextResponse.next();
@@ -92,7 +92,7 @@ export async function middleware(request: NextRequest) {
     loginUrl.searchParams.set("from", pathname);
     const redirectResponse = NextResponse.redirect(loginUrl);
     redirectResponse.cookies.delete("accessToken");
-    redirectResponse.cookies.delete("RefreshToken");
+    redirectResponse.cookies.delete("refreshToken");
     return redirectResponse;
   }
 

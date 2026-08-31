@@ -76,7 +76,7 @@ api.interceptors.response.use(
       originalReq._retry = true;
       isRefreshing = true;
       try {
-        const response = await publicApi.post("/refresh-token");
+        const response = await publicApi.post("/auth/refresh-token");
         const { user, accessToken } = response.data;
         useAuthStore.getState().setAuth(user, accessToken);
         originalReq.headers.Authorization = `Bearer ${accessToken}`;
