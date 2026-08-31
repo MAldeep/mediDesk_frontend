@@ -21,7 +21,7 @@ export const useAuth = () => {
     mutationFn: (data: LoginType) => authServices.login(data),
     onSuccess: async (data: AuthResponse) => {
       await useAuthStore.getState().setAuth(data.data.user, data.accessToken);
-      router.replace("/dashboard");
+      router.replace(`/dashboard/${data.data.user.role}`);
     },
   });
   return {
