@@ -19,19 +19,59 @@ async function getJwtPayload(token: string) {
   }
 }
 
+async function refreshAccessToken(refreshToken: string) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      },
+    );
+
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data.accessToken as string;
+  } catch (error) {
+    return null;
+  }
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const accessToken = request.cookies.get("accessToken")?.value;
+  let accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("RefreshToken")?.value;
 
-  const isAuthenticated = Boolean(refreshToken || accessToken);
-  const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
-  const payload = accessToken ? await getJwtPayload(accessToken) : null;
+  let payload = accessToken ? await getJwtPayload(accessToken) : null;
+  let response = NextResponse.next();
+  let isTokenRefreshed = false;
+
+  if (!payload && refreshToken) {
+    const newAccessToken = await refreshAccessToken(refreshToken);
+
+    if (newAccessToken) {
+      accessToken = newAccessToken;
+      payload = await getJwtPayload(newAccessToken);
+      isTokenRefreshed = true;
+    }
+  }
+
+  const isAuthenticated = Boolean(payload);
   const userRole = payload?.role;
-  // in case of authenticated and trying to open auth route
+  const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
+
   if (isAuthenticated && isAuthRoute) {
     const targetPath = userRole ? `/dashboard/${userRole}` : "/dashboard";
-    return NextResponse.redirect(new URL(targetPath, request.url));
+    const redirectResponse = NextResponse.redirect(
+      new URL(targetPath, request.url),
+    );
+    if (isTokenRefreshed && accessToken) {
+      redirectResponse.cookies.set("accessToken", accessToken, {
+        httpOnly: true,
+      });
+    }
+    return redirectResponse;
   }
 
   const isAdminRoute = ADMIN_ROUTES.some((route) => pathname.startsWith(route));
@@ -47,33 +87,41 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/appointments");
 
-  // protected url and not authenticated
   if (isProtectedRoute && !isAuthenticated) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("from", pathname);
-    return NextResponse.redirect(loginUrl);
+    const redirectResponse = NextResponse.redirect(loginUrl);
+    redirectResponse.cookies.delete("accessToken");
+    redirectResponse.cookies.delete("RefreshToken");
+    return redirectResponse;
   }
 
   if (isProtectedRoute && userRole) {
     if (isAdminRoute && userRole !== "admin") {
-      return NextResponse.redirect(
+      response = NextResponse.redirect(
         new URL(`/dashboard/${userRole}`, request.url),
       );
-    }
-
-    if (isDoctorRoute && userRole !== "doctor" && userRole !== "admin") {
-      return NextResponse.redirect(
+    } else if (isDoctorRoute && userRole !== "doctor" && userRole !== "admin") {
+      response = NextResponse.redirect(
         new URL(`/dashboard/${userRole}`, request.url),
       );
-    }
-
-    if (isStaffRoute && userRole !== "staff" && userRole !== "admin") {
-      return NextResponse.redirect(
+    } else if (isStaffRoute && userRole !== "staff" && userRole !== "admin") {
+      response = NextResponse.redirect(
         new URL(`/dashboard/${userRole}`, request.url),
       );
     }
   }
-  return NextResponse.next();
+
+  if (isTokenRefreshed && accessToken) {
+    response.cookies.set("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+  }
+
+  return response;
 }
 
 export const config = {

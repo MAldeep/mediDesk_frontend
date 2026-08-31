@@ -46,7 +46,7 @@ export default function NavBar() {
         <div className="flex items-center gap-3">
           {user ? (
             <Link
-              href="/appointments"
+              href={`/dashboard/${user.role}`}
               className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm shadow-blue-500/20 transition duration-200"
             >
               <LayoutDashboard className="w-4 h-4" />
