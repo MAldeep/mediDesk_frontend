@@ -1,4 +1,4 @@
-export type Role = "Admin" | "Doctor" | "Staff";
+export type Role = "admin" | "doctor" | "staff";
 
 export type Permission =
   // Appointments
@@ -13,7 +13,7 @@ export type Permission =
   | "delete:patient";
 
 export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
-  Admin: [
+  admin: [
     "read:appointment",
     "create:appointment",
     "delete:appointment",
@@ -23,8 +23,8 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "update:patient",
     "delete:patient",
   ],
-  Doctor: ["read:appointment", "read:patient", "update:patient"],
-  Staff: [
+  doctor: ["read:appointment", "read:patient", "update:patient"],
+  staff: [
     "read:appointment",
     "create:appointment",
     "update:appointment",

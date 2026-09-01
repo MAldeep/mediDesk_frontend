@@ -1,17 +1,22 @@
 import { patientServices } from "@/app/services/patientServices";
-import { useAuthStore } from "@/app/stores/useAuthStore";
 import { CreatePatientData } from "@/app/validations/patientValidation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { usePermission } from "../usePermissions";
+import { Role } from "@/app/types/rbac";
 
 export const usePatients = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
-  const userRole = user?.role;
+  const { userRole, hasRole } = usePermission();
+  const canAddPatient = hasRole("admin" as Role) || hasRole("staff" as Role);
   const addPatientMutation = useMutation({
-    mutationFn: (patientData: CreatePatientData) =>
-      patientServices.create(patientData),
+    mutationFn: (patientData: CreatePatientData) => {
+      if (!canAddPatient) {
+        throw new Error("Unauthorized: Only Admin or Staff can add patients.");
+      }
+      return patientServices.create(patientData);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["patients"] });
       router.replace(`/dashboard/${userRole}/`);
