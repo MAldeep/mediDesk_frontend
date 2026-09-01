@@ -7,4 +7,8 @@ export const patientServices = {
     const response = await api.post("/patients", patientData);
     return response.data;
   },
+  getAll: async () => {
+    const response = await api.get("/patients");
+    return response.data.data.patients;
+  },
 };

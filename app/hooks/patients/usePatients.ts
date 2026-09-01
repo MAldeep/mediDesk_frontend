@@ -1,7 +1,7 @@
 import { patientServices } from "@/app/services/patientServices";
 import { useAuthStore } from "@/app/stores/useAuthStore";
 import { CreatePatientData } from "@/app/validations/patientValidation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 export const usePatients = () => {
@@ -15,11 +15,20 @@ export const usePatients = () => {
       router.replace(`/dashboard/${userRole}/`);
     },
   });
+  const getAllPatients = useQuery({
+    queryKey: ["patients"],
+    queryFn: () => patientServices.getAll(),
+  });
   return {
     // add
     add: addPatientMutation.mutate,
     addIsLoading: addPatientMutation.isPending,
     addIsError: addPatientMutation.isError,
     addError: addPatientMutation.error,
+    // getAll
+    patients: getAllPatients.data,
+    getIsLoading: getAllPatients.isLoading,
+    getIsError: getAllPatients.isError,
+    getError: getAllPatients.error,
   };
 };

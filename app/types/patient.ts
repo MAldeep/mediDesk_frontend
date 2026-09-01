@@ -4,7 +4,7 @@ export interface IScan {
   publicId: string;
 }
 export interface Patient {
-  id: string;
+  _id: string;
   name: string;
   phone: string;
   address: string;
