@@ -24,6 +24,13 @@ export const useAuth = () => {
       router.replace(`/dashboard/${data.data.user.role}`);
     },
   });
+  const logoutMutation = useMutation({
+    mutationFn: () => authServices.logout(),
+    onSuccess: async () => {
+      await useAuthStore.getState().clearAuth();
+      router.replace("/login");
+    },
+  });
   return {
     // register
     registerUser: registerMutation.mutate,
@@ -35,5 +42,10 @@ export const useAuth = () => {
     loginIsLoading: loginMutation.isPending,
     loginIsError: loginMutation.isError,
     loginError: loginMutation.error,
+    // Logout
+    logout: logoutMutation.mutate,
+    logoutIsLoading: logoutMutation.isPending,
+    logoutError: logoutMutation.error,
+    logoutIsError: logoutMutation.isError,
   };
 };

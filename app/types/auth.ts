@@ -16,3 +16,7 @@ export interface AuthResponse {
   };
   accessToken: string;
 }
+export interface LogoutResponse {
+  status: "success" | "fail";
+  message: string;
+}

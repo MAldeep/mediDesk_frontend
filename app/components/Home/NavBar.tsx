@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useAuthStore } from "@/app/stores/useAuthStore";
 import { Activity, LayoutDashboard } from "lucide-react";
+import LogoutBtn from "./LogoutBtn";
 
 export default function NavBar() {
   const { user } = useAuthStore();
@@ -45,13 +46,16 @@ export default function NavBar() {
         {/* Auth Action Buttons */}
         <div className="flex items-center gap-3">
           {user ? (
-            <Link
-              href={`/dashboard/${user.role}`}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm shadow-blue-500/20 transition duration-200"
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              Dashboard
-            </Link>
+            <div className="flex gap-1.5 items-center justify-center">
+              <Link
+                href={`/dashboard/${user.role}`}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-sm shadow-blue-500/20 transition duration-200"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span className="hidden lg:block">Dashboard</span>
+              </Link>
+              <LogoutBtn />
+            </div>
           ) : (
             <>
               <Link
