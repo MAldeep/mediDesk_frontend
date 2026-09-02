@@ -4,8 +4,30 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { usePermission } from "../usePermissions";
 import { Role } from "@/app/types/rbac";
+import { useEffect, useState } from "react";
+import { GetPatientsParams } from "@/app/types/patient";
 
-export const usePatients = () => {
+export const usePatients = (initialParams?: GetPatientsParams) => {
+  const [search, setSearch] = useState(initialParams?.search || "");
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const [page, setPage] = useState(initialParams?.page || 1);
+  const [limit, setLimit] = useState(initialParams?.limit || 10);
+  const [sort, setSort] = useState(initialParams?.sort || "-createdAt");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [search]);
+  const queryParams: GetPatientsParams = {
+    search: debouncedSearch || undefined,
+    page,
+    limit,
+    sort,
+  };
   const queryClient = useQueryClient();
   const router = useRouter();
   const { userRole, hasRole } = usePermission();
@@ -23,8 +45,8 @@ export const usePatients = () => {
     },
   });
   const getAllPatients = useQuery({
-    queryKey: ["patients"],
-    queryFn: () => patientServices.getAll(),
+    queryKey: ["patients", queryParams],
+    queryFn: () => patientServices.getAll(queryParams),
   });
   return {
     // add
@@ -37,5 +59,14 @@ export const usePatients = () => {
     getIsLoading: getAllPatients.isLoading,
     getIsError: getAllPatients.isError,
     getError: getAllPatients.error,
+    search,
+    setSearch,
+    page,
+    setPage,
+    limit,
+    setLimit,
+    sort,
+    setSort,
+    getRefetch: getAllPatients.refetch,
   };
 };
