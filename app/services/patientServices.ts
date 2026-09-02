@@ -16,4 +16,9 @@ export const patientServices = {
     const response = await api.get("/patients", { params: cleanParams });
     return response.data.data.patients;
   },
+  getById: async (id: string): Promise<Patient> => {
+    console.log("Sending the request");
+    const response = await api.get(`/patients/${id}`);
+    return response.data.data.patient;
+  },
 };

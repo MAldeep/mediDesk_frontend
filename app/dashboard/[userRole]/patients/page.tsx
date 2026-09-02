@@ -3,12 +3,14 @@
 import AddNewPatientBtn from "@/app/components/dashboard/patients/AddNewPatientBtn";
 import PatientCard from "@/app/components/dashboard/patients/PatientCard";
 import { usePatients } from "@/app/hooks/patients/usePatients";
+import { useAuthStore } from "@/app/stores/useAuthStore";
 import { Search, Loader2, AlertCircle, Users } from "lucide-react";
+import Link from "next/link";
 
 export default function Patients() {
   const { patients, getIsLoading, getIsError, getError, search, setSearch } =
     usePatients();
-
+  const userRole = useAuthStore((state) => state.user)?.role;
   return (
     <div className="min-h-screen bg-slate-50/50 p-6 md:p-8 space-y-6">
       {/* Top Header */}
@@ -61,7 +63,12 @@ export default function Patients() {
           {patients && patients.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {patients.map((patient) => (
-                <PatientCard key={patient._id} patient={patient} />
+                <Link
+                  href={`/dashboard/${userRole}/patients/${patient._id}`}
+                  key={patient._id}
+                >
+                  <PatientCard patient={patient} />
+                </Link>
               ))}
             </div>
           ) : (

@@ -7,7 +7,10 @@ import { Role } from "@/app/types/rbac";
 import { useEffect, useState } from "react";
 import { GetPatientsParams } from "@/app/types/patient";
 
-export const usePatients = (initialParams?: GetPatientsParams) => {
+export const usePatients = (
+  initialParams?: GetPatientsParams,
+  patientId?: string,
+) => {
   const [search, setSearch] = useState(initialParams?.search || "");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [page, setPage] = useState(initialParams?.page || 1);
@@ -48,6 +51,11 @@ export const usePatients = (initialParams?: GetPatientsParams) => {
     queryKey: ["patients", queryParams],
     queryFn: () => patientServices.getAll(queryParams),
   });
+  const getOneById = useQuery({
+    queryKey: ["patients", patientId],
+    queryFn: () => patientServices.getById(patientId!),
+    enabled: Boolean(patientId && patientId !== "undefined"),
+  });
   return {
     // add
     add: addPatientMutation.mutate,
@@ -68,5 +76,10 @@ export const usePatients = (initialParams?: GetPatientsParams) => {
     sort,
     setSort,
     getRefetch: getAllPatients.refetch,
+    // get By Id
+    patient: getOneById.data,
+    getOneIsLoading: getOneById.isLoading,
+    getOneError: getOneById.error,
+    getOneIsError: getOneById.isError,
   };
 };
