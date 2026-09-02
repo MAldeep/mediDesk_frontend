@@ -9,6 +9,6 @@ export const patientServices = {
   },
   getAll: async () => {
     const response = await api.get("/patients");
-    return response.data.data.patients;
+    return response.data.data.patients as Patient[];
   },
 };
