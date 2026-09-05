@@ -72,6 +72,13 @@ export const usePatients = (
       queryClient.invalidateQueries({ queryKey: ["patients", patientId] });
     },
   });
+  const deletePatientScan = useMutation({
+    mutationFn: (publicId: string) =>
+      patientServices.deleteScan(patientId!, publicId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patients", patientId] });
+    },
+  });
   return {
     // add
     add: addPatientMutation.mutate,
@@ -107,5 +114,10 @@ export const usePatients = (
     uploadIsLoading: uploadPatientScan.isPending,
     uploadIsError: uploadPatientScan.isError,
     uploadError: uploadPatientScan.error,
+    // delete patient scan
+    deleteScan: deletePatientScan.mutate,
+    deleteIsLoading: deletePatientScan.isPending,
+    deleteIsError: deletePatientScan.isError,
+    deleteError: deletePatientScan.error,
   };
 };

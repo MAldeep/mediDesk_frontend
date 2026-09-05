@@ -40,4 +40,10 @@ export const patientServices = {
     });
     return response.data.data.patient;
   },
+  deleteScan: async (id: string, publicId: string): Promise<Patient> => {
+    const response = await api.delete(`/patients/${id}/scan`, {
+      data: { publicId },
+    });
+    return response.data.data.patient;
+  },
 };

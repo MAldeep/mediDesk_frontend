@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useForm, useWatch } from "react-hook-form";
+import Image from "next/image";
 import { Patient, IScan } from "@/app/types/patient";
 import {
   FileSpreadsheet,
@@ -11,6 +11,8 @@ import {
   UploadCloud,
   Loader2,
   Eye,
+  Trash2,
+  AlertTriangle,
   Image as ImageIcon,
 } from "lucide-react";
 import { usePatients } from "@/app/hooks/patients/usePatients";
@@ -29,11 +31,19 @@ export default function ScansRadiologySection({
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [selectedScanUrl, setSelectedScanUrl] = useState<string | null>(null);
 
-  const { upload, uploadIsLoading, uploadIsError, uploadError } = usePatients(
-    undefined,
-    patient._id,
-  );
+  const [scanToDelete, setScanToDelete] = useState<IScan | null>(null);
 
+  // Hook
+  const {
+    upload,
+    uploadIsLoading,
+    uploadIsError,
+    uploadError,
+    deleteScan,
+    deleteIsLoading,
+  } = usePatients(undefined, patient._id);
+
+  // React Hook Form
   const {
     register,
     handleSubmit,
@@ -62,18 +72,26 @@ export default function ScansRadiologySection({
   const onSubmit = (data: UploadFormInputs) => {
     if (!data.scanFile || data.scanFile.length === 0) return;
 
-    const fileToUpload = data.scanFile[0];
-
-    upload(fileToUpload, {
+    upload(data.scanFile[0], {
       onSuccess: () => {
         handleCloseUpload();
       },
     });
   };
 
+  const ConfirmDeleteScan = () => {
+    if (!scanToDelete) return;
+
+    deleteScan(scanToDelete.publicId, {
+      onSuccess: () => {
+        setScanToDelete(null);
+      },
+    });
+  };
+
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
-      {/* Section Header */}
+      {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-4">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -99,7 +117,7 @@ export default function ScansRadiologySection({
         </button>
       </div>
 
-      {/* Scans List / Grid */}
+      {/* Scans Grid */}
       {patient.scan && patient.scan.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 pt-1">
           {patient.scan.map((scanItem: IScan, index: number) => (
@@ -112,14 +130,30 @@ export default function ScansRadiologySection({
                 src={scanItem.url}
                 alt={`Scan ${index + 1}`}
                 fill
-                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
-                unoptimized
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
+
+              {/* Overlay Actions */}
               <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                <span className="p-2 rounded-full bg-white/90 text-slate-800 shadow-sm">
+                <button
+                  type="button"
+                  title="View Image"
+                  className="p-2 rounded-full bg-white/90 text-slate-800 hover:bg-white shadow-sm transition-transform hover:scale-110 cursor-pointer"
+                >
                   <Eye className="w-4 h-4" />
-                </span>
+                </button>
+
+                <button
+                  type="button"
+                  title="Delete Scan"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setScanToDelete(scanItem);
+                  }}
+                  className="p-2 rounded-full bg-red-600/90 text-white hover:bg-red-600 shadow-sm transition-transform hover:scale-110 cursor-pointer"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             </div>
           ))}
@@ -137,14 +171,68 @@ export default function ScansRadiologySection({
         </div>
       )}
 
-      {/* Upload Scan Modal */}
+      {/* 1. Custom Delete Confirmation Modal */}
+      {scanToDelete && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200"
+          onClick={() => !deleteIsLoading && setScanToDelete(null)}
+        >
+          <div
+            className="bg-white border border-slate-200 rounded-2xl w-full max-w-sm p-6 shadow-xl space-y-4 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">
+                  Delete Medical Scan?
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  This action cannot be undone. The image will be permanently
+                  removed.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                disabled={deleteIsLoading}
+                onClick={() => setScanToDelete(null)}
+                className="px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                disabled={deleteIsLoading}
+                onClick={ConfirmDeleteScan}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer"
+              >
+                {deleteIsLoading ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Deleting...</span>
+                  </>
+                ) : (
+                  <span>Delete</span>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 2. Upload Modal */}
       {isUploadModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
           <div
             className="bg-white border border-slate-200 rounded-2xl w-full max-w-md shadow-xl overflow-hidden animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -163,13 +251,12 @@ export default function ScansRadiologySection({
                 type="button"
                 onClick={handleCloseUpload}
                 disabled={uploadIsLoading}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-50"
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            {/* Modal Form */}
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="p-6 space-y-4">
                 {uploadIsError && (
@@ -200,7 +287,6 @@ export default function ScansRadiologySection({
                           alt="Preview"
                           fill
                           sizes="100vw"
-                          unoptimized
                           className="w-full h-full object-cover"
                         />
                       </div>
@@ -225,13 +311,12 @@ export default function ScansRadiologySection({
                 </div>
               </div>
 
-              {/* Modal Actions */}
               <div className="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={handleCloseUpload}
                   disabled={uploadIsLoading}
-                  className="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-200/60 rounded-xl transition-colors disabled:opacity-50"
+                  className="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-200/60 rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -239,7 +324,7 @@ export default function ScansRadiologySection({
                 <button
                   type="submit"
                   disabled={uploadIsLoading}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all shadow-sm disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer"
                 >
                   {uploadIsLoading ? (
                     <>
@@ -259,7 +344,7 @@ export default function ScansRadiologySection({
         </div>
       )}
 
-      {/* Full Preview Lightbox Modal */}
+      {/* 3. Lightbox Preview Modal */}
       {selectedScanUrl && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-xs animate-in fade-in duration-200"
@@ -272,7 +357,7 @@ export default function ScansRadiologySection({
             <button
               type="button"
               onClick={() => setSelectedScanUrl(null)}
-              className="absolute top-3 right-3 z-10 p-2 rounded-full bg-slate-900/60 text-white hover:bg-slate-900 transition-colors"
+              className="absolute top-3 right-3 z-10 p-2 rounded-full bg-slate-900/60 text-white hover:bg-slate-900 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -281,7 +366,6 @@ export default function ScansRadiologySection({
               alt="Scan Full View"
               width={1200}
               height={800}
-              unoptimized
               className="max-w-full max-h-[85vh] object-contain"
             />
           </div>
