@@ -46,4 +46,9 @@ export const patientServices = {
     });
     return response.data.data.patient;
   },
+  deletePatient: async (id: string): Promise<Patient> => {
+    const response = await api.delete(`/patients/${id}`);
+
+    return response.data.data.patient;
+  },
 };

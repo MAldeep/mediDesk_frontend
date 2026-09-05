@@ -38,6 +38,7 @@ export const usePatients = (
   const router = useRouter();
   const { userRole, hasRole } = usePermission();
   const canAddPatient = hasRole("admin" as Role) || hasRole("staff" as Role);
+  const canDeletePatient = hasRole("admin" as Role);
   const addPatientMutation = useMutation({
     mutationFn: (patientData: CreatePatientData) => {
       if (!canAddPatient) {
@@ -79,6 +80,17 @@ export const usePatients = (
       queryClient.invalidateQueries({ queryKey: ["patients", patientId] });
     },
   });
+  const deletePatientMutation = useMutation({
+    mutationFn: () => {
+      if (!canDeletePatient) {
+        throw new Error("Unauthorized: Only Admin can delete patients.");
+      }
+      return patientServices.deletePatient(patientId!);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
+    },
+  });
   return {
     // add
     add: addPatientMutation.mutate,
@@ -114,6 +126,11 @@ export const usePatients = (
     uploadIsLoading: uploadPatientScan.isPending,
     uploadIsError: uploadPatientScan.isError,
     uploadError: uploadPatientScan.error,
+    // delete patient
+    deletePatient: deletePatientMutation.mutate,
+    deletePatientIsLoading: deletePatientMutation.isPending,
+    deletePatientIsError: deletePatientMutation.isError,
+    deletePatientError: deletePatientMutation.error,
     // delete patient scan
     deleteScan: deletePatientScan.mutate,
     deleteIsLoading: deletePatientScan.isPending,

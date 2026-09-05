@@ -2,6 +2,7 @@
 
 import AppointmentsHistorySection from "@/app/components/dashboard/patients/AppointmentsHistorySection";
 import BackNavigation from "@/app/components/dashboard/patients/BackNavigation";
+import DeletePatientBtn from "@/app/components/dashboard/patients/DeletePatientBtn";
 import PersonalInfoCard from "@/app/components/dashboard/patients/PersonalInfoCard";
 import ScansRadiologySection from "@/app/components/dashboard/patients/ScansRadiologySection";
 import { usePatients } from "@/app/hooks/patients/usePatients";
@@ -57,6 +58,7 @@ export default function PatientPage() {
 
           {/* Appointments History Section */}
           <AppointmentsHistorySection patient={patient} />
+          <DeletePatientBtn />
         </div>
       </div>
     </div>
