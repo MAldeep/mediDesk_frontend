@@ -1,5 +1,8 @@
 import { patientServices } from "@/app/services/patientServices";
-import { CreatePatientData } from "@/app/validations/patientValidation";
+import {
+  CreatePatientData,
+  UpdatePatientData,
+} from "@/app/validations/patientValidation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { usePermission } from "../usePermissions";
@@ -56,6 +59,13 @@ export const usePatients = (
     queryFn: () => patientServices.getById(patientId!),
     enabled: Boolean(patientId && patientId !== "undefined"),
   });
+  const updatePatientMutation = useMutation({
+    mutationFn: (updateData: UpdatePatientData) =>
+      patientServices.update(patientId!, updateData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patients", patientId] });
+    },
+  });
   return {
     // add
     add: addPatientMutation.mutate,
@@ -81,5 +91,10 @@ export const usePatients = (
     getOneIsLoading: getOneById.isLoading,
     getOneError: getOneById.error,
     getOneIsError: getOneById.isError,
+    // update
+    update: updatePatientMutation.mutate,
+    updateIsLoading: updatePatientMutation.isPending,
+    updateIsError: updatePatientMutation.isError,
+    updateError: updatePatientMutation.error,
   };
 };

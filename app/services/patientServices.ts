@@ -1,6 +1,9 @@
 import { api } from "../lib/axiosClient";
 import { GetPatientsParams, Patient } from "../types/patient";
-import { CreatePatientData } from "../validations/patientValidation";
+import {
+  CreatePatientData,
+  UpdatePatientData,
+} from "../validations/patientValidation";
 
 export const patientServices = {
   create: async (patientData: CreatePatientData): Promise<Patient> => {
@@ -17,8 +20,14 @@ export const patientServices = {
     return response.data.data.patients;
   },
   getById: async (id: string): Promise<Patient> => {
-    console.log("Sending the request");
     const response = await api.get(`/patients/${id}`);
+    return response.data.data.patient;
+  },
+  update: async (
+    id: string,
+    updateData: UpdatePatientData,
+  ): Promise<Patient> => {
+    const response = await api.patch(`/patients/${id}`, updateData);
     return response.data.data.patient;
   },
 };

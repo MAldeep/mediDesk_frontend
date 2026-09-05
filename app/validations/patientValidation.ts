@@ -12,3 +12,11 @@ export const createNewPatientSchema = z.object({
 });
 
 export type CreatePatientData = z.infer<typeof createNewPatientSchema>;
+export const updatePatientSchema = createNewPatientSchema
+  .partial()
+  .refine(
+    (data) => Object.keys(data).length > 0,
+    "Must provide at least one field to update",
+  );
+
+export type UpdatePatientData = z.infer<typeof updatePatientSchema>;
