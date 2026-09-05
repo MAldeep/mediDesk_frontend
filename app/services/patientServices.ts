@@ -30,4 +30,14 @@ export const patientServices = {
     const response = await api.patch(`/patients/${id}`, updateData);
     return response.data.data.patient;
   },
+  uploadScan: async (id: string, file: File): Promise<Patient> => {
+    const formData = new FormData();
+    formData.append("scan", file);
+    const response = await api.post(`/patients/${id}/scan`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data.data.patient;
+  },
 };

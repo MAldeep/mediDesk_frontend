@@ -66,6 +66,12 @@ export const usePatients = (
       queryClient.invalidateQueries({ queryKey: ["patients", patientId] });
     },
   });
+  const uploadPatientScan = useMutation({
+    mutationFn: (file: File) => patientServices.uploadScan(patientId!, file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patients", patientId] });
+    },
+  });
   return {
     // add
     add: addPatientMutation.mutate,
@@ -96,5 +102,10 @@ export const usePatients = (
     updateIsLoading: updatePatientMutation.isPending,
     updateIsError: updatePatientMutation.isError,
     updateError: updatePatientMutation.error,
+    // upload patient sacn
+    upload: uploadPatientScan.mutate,
+    uploadIsLoading: uploadPatientScan.isPending,
+    uploadIsError: uploadPatientScan.isError,
+    uploadError: uploadPatientScan.error,
   };
 };

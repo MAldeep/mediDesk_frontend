@@ -46,12 +46,10 @@ export default function PatientPage() {
     <div className="min-h-screen bg-slate-50/50 p-6 md:p-8 space-y-6">
       {/* Back Navigation & Actions */}
       <BackNavigation userRole={userRole} />
-
       {/* Main Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Personal Info Card */}
         <PersonalInfoCard patient={patient} />
-
         {/* Right Column: Scans & Medical Records + Appointments */}
         <div className="lg:col-span-2 space-y-6">
           {/* Scans & Radiology Section Placeholder */}
