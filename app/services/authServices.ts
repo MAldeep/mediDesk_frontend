@@ -25,4 +25,13 @@ export const authServices = {
     const response = await api.post("/auth/invite-user", inviteData);
     return response.data;
   },
+  setPassword: async (
+    password: string,
+    token: string,
+  ): Promise<AuthResponse> => {
+    const response = await publicApi.post(`/auth/set-password/${token}`, {
+      password,
+    });
+    return response.data;
+  },
 };

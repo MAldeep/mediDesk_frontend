@@ -36,6 +36,15 @@ export const useAuth = () => {
   const inviteUserMutation = useMutation({
     mutationFn: (data: InviteUser) => authServices.inviteUser(data),
   });
+  const setPasswordMutation = useMutation({
+    mutationFn: ({
+      newPassword,
+      token,
+    }: {
+      newPassword: string;
+      token: string;
+    }) => authServices.setPassword(newPassword, token),
+  });
   return {
     // register
     registerUser: registerMutation.mutate,
@@ -57,5 +66,10 @@ export const useAuth = () => {
     inviteIsLoading: inviteUserMutation.isPending,
     inviteError: inviteUserMutation.error,
     inviteUserIsError: inviteUserMutation.isError,
+    // set password
+    setPassword: setPasswordMutation.mutate,
+    setPassIsLoading: setPasswordMutation.isPending,
+    setPassIsError: setPasswordMutation.isError,
+    setPassError: setPasswordMutation.error,
   };
 };
