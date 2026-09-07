@@ -1,8 +1,12 @@
 import Patients from "@/app/components/dashboard/patients/Patients";
 import Appointments from "@/app/components/dashboard/appointments/Appointments";
 import InviteUserBtn from "@/app/components/dashboard/inviteUser/InviteUserBtn";
+import { Role } from "@/app/types/rbac";
+import PermissionGuard from "@/app/components/guards/PermissionGuard";
 
 export default function UserDashboard() {
+  const allowedRole: Role[] = ["admin", "staff"];
+
   return (
     <div className="w-full min-h-screen flex flex-col lg:flex-row bg-slate-50">
       <main className="flex-1 flex flex-col gap-6 p-4 md:p-6">
@@ -22,7 +26,9 @@ export default function UserDashboard() {
         <Appointments />
 
         {/* Patients Section */}
-        <Patients />
+        <PermissionGuard allowedRoles={allowedRole}>
+          <Patients />
+        </PermissionGuard>
       </main>
     </div>
   );
