@@ -1,5 +1,10 @@
 import { api, publicApi } from "../lib/axiosClient";
-import { AuthResponse, LogoutResponse } from "../types/auth";
+import {
+  AuthResponse,
+  InviteResponse,
+  InviteUser,
+  LogoutResponse,
+} from "../types/auth";
 import { LoginType } from "../validations/loginValidation";
 import { RegisterData } from "../validations/registerValidation";
 
@@ -14,6 +19,10 @@ export const authServices = {
   },
   logout: async (): Promise<LogoutResponse> => {
     const response = await api.post("/auth/logout");
+    return response.data;
+  },
+  inviteUser: async (inviteData: InviteUser): Promise<InviteResponse> => {
+    const response = await api.post("/auth/invite-user", inviteData);
     return response.data;
   },
 };

@@ -20,3 +20,16 @@ export interface LogoutResponse {
   status: "success" | "fail";
   message: string;
 }
+export interface InviteResponse {
+  status: "success" | "fail";
+  message: string;
+  data: {
+    user: User;
+  };
+}
+export interface InviteUser {
+  name: string;
+  email: string;
+  role: "doctor" | "staff";
+  adminName: string | undefined;
+}

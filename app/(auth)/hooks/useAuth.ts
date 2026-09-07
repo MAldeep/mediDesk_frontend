@@ -1,7 +1,7 @@
 "use client";
 import { authServices } from "@/app/services/authServices";
 import { useAuthStore } from "@/app/stores/useAuthStore";
-import { AuthResponse } from "@/app/types/auth";
+import { AuthResponse, InviteUser } from "@/app/types/auth";
 import { LoginType } from "@/app/validations/loginValidation";
 import { RegisterData } from "@/app/validations/registerValidation";
 import { useMutation } from "@tanstack/react-query";
@@ -17,6 +17,7 @@ export const useAuth = () => {
       router.replace("/login");
     },
   });
+  // login
   const loginMutation = useMutation({
     mutationFn: (data: LoginType) => authServices.login(data),
     onSuccess: async (data: AuthResponse) => {
@@ -24,12 +25,16 @@ export const useAuth = () => {
       router.replace(`/dashboard/${data.data.user.role}`);
     },
   });
+  // logout
   const logoutMutation = useMutation({
     mutationFn: () => authServices.logout(),
     onSuccess: async () => {
       await useAuthStore.getState().clearAuth();
       router.replace("/login");
     },
+  });
+  const inviteUserMutation = useMutation({
+    mutationFn: (data: InviteUser) => authServices.inviteUser(data),
   });
   return {
     // register
@@ -47,5 +52,10 @@ export const useAuth = () => {
     logoutIsLoading: logoutMutation.isPending,
     logoutError: logoutMutation.error,
     logoutIsError: logoutMutation.isError,
+    // invite user
+    invite: inviteUserMutation.mutate,
+    inviteIsLoading: inviteUserMutation.isPending,
+    inviteError: inviteUserMutation.error,
+    inviteUserIsError: inviteUserMutation.isError,
   };
 };
