@@ -1,4 +1,3 @@
-// src/components/home/Features.tsx
 "use client";
 
 import { Calendar, FileText, ShieldCheck, UserCheck } from "lucide-react";
@@ -6,30 +5,30 @@ import { Calendar, FileText, ShieldCheck, UserCheck } from "lucide-react";
 const features = [
   {
     icon: Calendar,
-    title: "إدارة المواعيد والحجوزات",
+    title: "Appointment Management",
     description:
-      "جدولة سلسة للمواعيد وتفادي التضارب، مع تنبيهات تلقائية للمرضى وتقليل نسبة الغياب.",
+      "Seamless scheduling to prevent double-bookings, paired with automated patient reminders to minimize no-shows.",
     iconBg: "bg-blue-50 text-blue-600",
   },
   {
     icon: FileText,
-    title: "الروشتات والملفات الطبية",
+    title: "E-Prescriptions & Records",
     description:
-      "إنشاء روشتات إلكترونية وحفظ السجل الطبي الكامل للمريض للرجوع إليه في أي وقت.",
+      "Generate digital prescriptions effortlessly and store complete patient medical histories for instant access anytime.",
     iconBg: "bg-teal-50 text-teal-600",
   },
   {
     icon: ShieldCheck,
-    title: "صلاحيات وأمان عالي (RBAC)",
+    title: "High Security & Role-Based Access (RBAC)",
     description:
-      "توزيع الصلاحيات بدقة بين الأدمن، الأطباء، وطاقم الاستقبال لضمان خصوصية البيانات.",
+      "Enforce granular permissions for admins, doctors, and receptionists to guarantee complete patient data privacy.",
     iconBg: "bg-indigo-50 text-indigo-600",
   },
   {
     icon: UserCheck,
-    title: "تجربة مريض ممتازة",
+    title: "Seamless Patient Experience",
     description:
-      "متابعة دورية وتنظيم ملفات المرضى بسهولة لتوفير الوقت وتقليل زمن الانتظار.",
+      "Organize patient profiles effortlessly, streamline follow-ups, save valuable time, and significantly reduce wait times.",
     iconBg: "bg-sky-50 text-sky-600",
   },
 ];
@@ -41,14 +40,14 @@ export default function Features() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="text-xs font-bold uppercase tracking-widest text-blue-600">
-            Why MediDesk ?
+            Why MediDesk?
           </h2>
           <p className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            كل ما تحتاجه لإدارة عيادتك الذكية في مكان واحد
+            Everything you need to manage your smart clinic in one place
           </p>
           <p className="text-base text-slate-600">
-            صُمم خصيصًا ليلبي احتياجات العيادات والمراكز الطبية المعاصرة بكفاءة
-            وأمان تام
+            Engineered specifically to fulfill the needs of modern clinics and
+            medical centers with complete security and efficiency.
           </p>
         </div>
 

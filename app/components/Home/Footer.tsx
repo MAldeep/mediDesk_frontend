@@ -19,22 +19,22 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm text-slate-400 max-w-sm leading-relaxed">
-              منظومة إدارة العيادات الطبية الحديثة. سهولة وتكامل في إدارة
-              الحجوزات والملفات والروشتات.
+              Modern medical clinic management system. Effortless integration
+              for managing appointments, records, and prescriptions.
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
             <div className="space-y-3">
-              <p className="font-semibold text-white">النظام</p>
+              <p className="font-semibold text-white">System</p>
               <ul className="space-y-2">
                 <li>
                   <Link
                     href="#features"
                     className="hover:text-blue-400 transition"
                   >
-                    المميزات
+                    Features
                   </Link>
                 </li>
                 <li>
@@ -42,7 +42,7 @@ export default function Footer() {
                     href="/subscriptions"
                     className="hover:text-blue-400 transition"
                   >
-                    الاشتراكات
+                    Pricing
                   </Link>
                 </li>
                 <li>
@@ -50,35 +50,35 @@ export default function Footer() {
                     href="/about"
                     className="hover:text-blue-400 transition"
                   >
-                    عن المنظومة
+                    About Us
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div className="space-y-3">
-              <p className="font-semibold text-white">الدعم والخصوصية</p>
+              <p className="font-semibold text-white">Support & Privacy</p>
               <ul className="space-y-2">
                 <li>
                   <Link href="#" className="hover:text-blue-400 transition">
-                    مركز المساعدة
+                    Help Center
                   </Link>
                 </li>
                 <li>
                   <Link href="#" className="hover:text-blue-400 transition">
-                    سياسة الخصوصية
+                    Privacy Policy
                   </Link>
                 </li>
                 <li>
                   <Link href="#" className="hover:text-blue-400 transition">
-                    الشروط والأحكام
+                    Terms of Service
                   </Link>
                 </li>
               </ul>
             </div>
 
             <div className="space-y-3 col-span-2 sm:col-span-1">
-              <p className="font-semibold text-white">تواصل معنا</p>
+              <p className="font-semibold text-white">Contact Us</p>
               <p className="text-xs text-slate-400">support@medidesk.com</p>
             </div>
           </div>
@@ -86,9 +86,9 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} MediDesk. جميع الحقوق محفوظة.</p>
+          <p>© {new Date().getFullYear()} MediDesk. All rights reserved.</p>
           <p className="text-slate-400 font-medium">
-            صُمم بأعلى معايير الأمان والتشفير الطبي.
+            Designed with high-level medical data security & encryption.
           </p>
         </div>
       </div>

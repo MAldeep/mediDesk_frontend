@@ -1,4 +1,3 @@
-// src/components/home/Hero.tsx
 "use client";
 
 import Link from "next/link";
@@ -25,12 +24,12 @@ export default function Hero() {
             {/* Top Pill Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs sm:text-sm font-semibold shadow-sm">
               <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-              <span>الجيل الجديد لـ إدارة العيادات والمراكز الطبية</span>
+              <span>Next-Gen Clinic Management System</span>
             </div>
 
             {/* Main Heading */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
-              إدارة عيادتك أسهل مع{" "}
+              Manage your practice easily with{" "}
               <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-teal-500">
                 MediDesk
               </span>
@@ -38,9 +37,9 @@ export default function Hero() {
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              منظومة متكاملة لإدارة ملفات المرضى، تنظيم المواعيد، الروشتات
-              الإلكترونية، والحسابات. مصممة لتوفير وقت الطبيب وتحسين تجربة
-              المريض.
+              An all-in-one platform for patient records, appointment
+              scheduling, e-prescriptions, and billing. Built to save doctors
+              time and elevate the patient experience.
             </p>
 
             {/* CTA Buttons */}
@@ -49,7 +48,7 @@ export default function Hero() {
                 href="/register"
                 className="w-full sm:w-auto px-7 py-3.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-blue-500/35 transition duration-200 flex items-center justify-center gap-2 group"
               >
-                <span>ابدأ التجربة المجانية</span>
+                <span>Start Free Trial</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
 
@@ -57,7 +56,7 @@ export default function Hero() {
                 href="/about"
                 className="w-full sm:w-auto px-7 py-3.5 text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-sm"
               >
-                <span>اعرف أكثر عن الميزات</span>
+                <span>Learn More Features</span>
               </Link>
             </div>
 
@@ -65,11 +64,11 @@ export default function Hero() {
             <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs sm:text-sm font-medium text-slate-600">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-teal-500" />
-                <span>إعداد سريع في أقل من 5 دقائق</span>
+                <span>Fast setup in under 5 minutes</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-teal-500" />
-                <span>حماية كاملة للبيانات RBAC</span>
+                <span>Full RBAC data security</span>
               </div>
             </div>
           </div>
@@ -87,15 +86,15 @@ export default function Hero() {
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-slate-900">
-                        نظرة عامة اليوم
+                        Today&apos;s Overview
                       </h3>
                       <p className="text-xs text-slate-500">
-                        عيادة د. علي مجدي
+                        Dr. Ali Magdy&apos;s Clinic
                       </p>
                     </div>
                   </div>
                   <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200/60">
-                    نشط الآن
+                    Active Now
                   </span>
                 </div>
 
@@ -104,15 +103,17 @@ export default function Hero() {
                   <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
                     <div className="flex items-center gap-2 text-slate-500 text-xs mb-1">
                       <Calendar className="w-3.5 h-3.5 text-blue-600" />
-                      <span>حجوزات اليوم</span>
+                      <span>Today&apos;s Bookings</span>
                     </div>
-                    <p className="text-xl font-bold text-slate-900">18 مريض</p>
+                    <p className="text-xl font-bold text-slate-900">
+                      18 Patients
+                    </p>
                   </div>
 
                   <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-100">
                     <div className="flex items-center gap-2 text-slate-500 text-xs mb-1">
                       <Users className="w-3.5 h-3.5 text-teal-600" />
-                      <span>إجمالي المرضى</span>
+                      <span>Total Patients</span>
                     </div>
                     <p className="text-xl font-bold text-slate-900">1,240</p>
                   </div>
@@ -121,25 +122,25 @@ export default function Hero() {
                 {/* Live Appointment Preview Item */}
                 <div className="space-y-2">
                   <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                    الموعد القادم
+                    Upcoming Appointment
                   </div>
 
                   <div className="flex items-center justify-between p-3 bg-blue-50/50 rounded-xl border border-blue-100">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">
-                        أ
+                        A
                       </div>
                       <div>
                         <p className="text-xs font-bold text-slate-800">
-                          أحمد محمود
+                          Ahmed Mahmoud
                         </p>
                         <p className="text-[11px] text-slate-500">
-                          كشف أسنان - 10:30 ص
+                          Dental Checkup - 10:30 AM
                         </p>
                       </div>
                     </div>
                     <span className="text-[11px] font-semibold text-blue-600 bg-white px-2 py-1 rounded-md shadow-xs border border-blue-100">
-                      مؤكد
+                      Confirmed
                     </span>
                   </div>
                 </div>
@@ -147,7 +148,7 @@ export default function Hero() {
                 {/* Security Badge Footnote */}
                 <div className="pt-2 flex items-center justify-center gap-2 text-xs text-slate-400 border-t border-slate-100">
                   <ShieldCheck className="w-4 h-4 text-slate-400" />
-                  <span>تشفير طبي عالي الأمان للبيانات</span>
+                  <span>High-security medical encryption for your data</span>
                 </div>
               </div>
             </div>
