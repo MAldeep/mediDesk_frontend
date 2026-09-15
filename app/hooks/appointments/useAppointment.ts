@@ -1,4 +1,5 @@
 import { appointmentServices } from "@/app/services/appointment.service";
+import { AppointmentStatus } from "@/app/types/appointments";
 import { GetParams } from "@/app/types/patient";
 import { CreateAppointmentInput } from "@/app/validations/appointment.schemas";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -37,6 +38,18 @@ export const useAppointment = (initialParams?: GetParams) => {
     queryKey: ["appointments", queryParams],
     queryFn: () => appointmentServices.getAll(queryParams),
   });
+  const updateMutation = useMutation({
+    mutationFn: ({
+      id,
+      updateData,
+    }: {
+      id: string;
+      updateData: AppointmentStatus;
+    }) => appointmentServices.updateStatus(id, updateData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+    },
+  });
   return {
     // create
     create: createAppointmentMutation.mutate,
@@ -57,5 +70,10 @@ export const useAppointment = (initialParams?: GetParams) => {
     sort,
     setSort,
     appointemntsRefetch: appointmentsQuery.refetch,
+    // update status
+    update: updateMutation.mutate,
+    updateError: updateMutation.error,
+    updateIsError: updateMutation.isError,
+    updateIsLoading: updateMutation.isPending,
   };
 };

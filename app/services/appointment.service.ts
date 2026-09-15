@@ -1,5 +1,5 @@
 import { api } from "../lib/axiosClient";
-import { Appointments } from "../types/appointments";
+import { Appointments, AppointmentStatus } from "../types/appointments";
 import { GetParams } from "../types/patient";
 import { CreateAppointmentInput } from "../validations/appointment.schemas";
 
@@ -16,5 +16,14 @@ export const appointmentServices = {
     );
     const response = await api.get("/appointments", { params: cleanParams });
     return response.data.data.appointments;
+  },
+  updateStatus: async (
+    id: string,
+    updateData: AppointmentStatus,
+  ): Promise<Appointments> => {
+    const response = await api.patch(`/appointments/${id}`, {
+      status: updateData,
+    });
+    return response.data.data.appointment;
   },
 };

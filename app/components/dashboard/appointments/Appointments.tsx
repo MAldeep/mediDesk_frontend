@@ -2,7 +2,7 @@
 
 import { Loader2 } from "lucide-react";
 import { useAppointment } from "@/app/hooks/appointments/useAppointment";
-import type { Appointments } from "@/app/types/appointments";
+import type { Appointments, AppointmentStatus } from "@/app/types/appointments";
 import AppointmentHeader from "./AppointmentHeader";
 import AppointmentControlAndFilterBar from "./AppointmentControlAndFilterBar";
 import AppointmentErrorState from "./AppointmentErrorState";
@@ -20,6 +20,8 @@ export default function Appointments() {
     setSearch,
     sort,
     setSort,
+    update,
+    updateIsLoading,
   } = useAppointment();
 
   // Helper formatting function for status styling
@@ -51,6 +53,10 @@ export default function Appointments() {
         hour12: true,
       }),
     };
+  };
+
+  const handleUpdateStatus = (id: string, updateData: AppointmentStatus) => {
+    update({ id, updateData });
   };
 
   return (
@@ -96,7 +102,6 @@ export default function Appointments() {
           !appointmentsIsError &&
           appointments &&
           appointments.map((apt: Appointments) => {
-            // Safe extraction whether populated or raw string IDs
             const patientName =
               typeof apt.patient === "object" && apt.patient !== null
                 ? apt.patient.name
@@ -118,6 +123,8 @@ export default function Appointments() {
                 getStatusBadge={getStatusBadge}
                 patientName={patientName}
                 time={time}
+                onUpdateStatus={handleUpdateStatus}
+                isUpdating={updateIsLoading}
               />
             );
           })}
