@@ -26,7 +26,7 @@ export default function AppointmentsHistorySection({
         <div className="space-y-2 pt-1">
           {patient.appointments.map((apt, index) => (
             <div
-              key={index}
+              key={apt._id}
               className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50/50 text-xs"
             >
               <div className="flex items-center gap-3">
@@ -36,7 +36,7 @@ export default function AppointmentsHistorySection({
                 </span>
               </div>
               <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-200 text-slate-700 capitalize">
-                {typeof apt === "string" ? apt : "Completed"}
+                {apt.status}
               </span>
             </div>
           ))}

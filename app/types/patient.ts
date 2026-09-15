@@ -1,4 +1,4 @@
-import { AppointmentStatus } from "./appointments";
+import { Appointments } from "./appointments";
 export interface IScan {
   url: string;
   publicId: string;
@@ -11,7 +11,7 @@ export interface Patient {
   age: number;
   gender: "male" | "female";
   history?: string;
-  appointments: AppointmentStatus[];
+  appointments: Appointments[];
   scan?: IScan[];
 }
 export interface GetParams {
