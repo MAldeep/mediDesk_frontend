@@ -1,5 +1,5 @@
 import { api } from "../lib/axiosClient";
-import { GetPatientsParams, Patient } from "../types/patient";
+import { GetParams, Patient } from "../types/patient";
 import {
   CreatePatientData,
   UpdatePatientData,
@@ -10,7 +10,7 @@ export const patientServices = {
     const response = await api.post("/patients", patientData);
     return response.data;
   },
-  getAll: async (params?: GetPatientsParams): Promise<Patient[]> => {
+  getAll: async (params?: GetParams): Promise<Patient[]> => {
     const cleanParams = Object.fromEntries(
       Object.entries(params || {}).filter(
         ([_, value]) => value !== undefined && value !== "",

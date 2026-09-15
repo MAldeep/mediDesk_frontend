@@ -8,12 +8,9 @@ import { useRouter } from "next/navigation";
 import { usePermission } from "../usePermissions";
 import { Role } from "@/app/types/rbac";
 import { useEffect, useState } from "react";
-import { GetPatientsParams } from "@/app/types/patient";
+import { GetParams } from "@/app/types/patient";
 
-export const usePatients = (
-  initialParams?: GetPatientsParams,
-  patientId?: string,
-) => {
+export const usePatients = (initialParams?: GetParams, patientId?: string) => {
   const [search, setSearch] = useState(initialParams?.search || "");
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [page, setPage] = useState(initialParams?.page || 1);
@@ -28,7 +25,7 @@ export const usePatients = (
 
     return () => clearTimeout(handler);
   }, [search]);
-  const queryParams: GetPatientsParams = {
+  const queryParams: GetParams = {
     search: debouncedSearch || undefined,
     page,
     limit,

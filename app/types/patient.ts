@@ -14,7 +14,7 @@ export interface Patient {
   appointments: AppointmentStatus[];
   scan?: IScan[];
 }
-export interface GetPatientsParams {
+export interface GetParams {
   search?: string;
   page?: number;
   limit?: number;
