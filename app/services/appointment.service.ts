@@ -26,4 +26,8 @@ export const appointmentServices = {
     });
     return response.data.data.appointment;
   },
+  delete: async (id: string): Promise<Appointments> => {
+    const response = await api.delete(`/appointments/${id}`);
+    return response.data.data;
+  },
 };

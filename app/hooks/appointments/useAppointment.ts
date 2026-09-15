@@ -50,6 +50,14 @@ export const useAppointment = (initialParams?: GetParams) => {
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
     },
   });
+  const deleteMutation = useMutation({
+    mutationFn: ({ id }: { id: string }) => appointmentServices.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["appointments"],
+      });
+    },
+  });
   return {
     // create
     create: createAppointmentMutation.mutate,
@@ -75,5 +83,10 @@ export const useAppointment = (initialParams?: GetParams) => {
     updateError: updateMutation.error,
     updateIsError: updateMutation.isError,
     updateIsLoading: updateMutation.isPending,
+    // delete
+    delete: deleteMutation.mutateAsync,
+    deleteIsError: deleteMutation.isError,
+    deleteError: deleteMutation.error,
+    deleteIsLoading: deleteMutation.isPending,
   };
 };

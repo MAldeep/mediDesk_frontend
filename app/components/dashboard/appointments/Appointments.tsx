@@ -22,9 +22,9 @@ export default function Appointments() {
     setSort,
     update,
     updateIsLoading,
+    delete: deleteAppointment,
   } = useAppointment();
 
-  // Helper formatting function for status styling
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "completed":
@@ -37,7 +37,6 @@ export default function Appointments() {
     }
   };
 
-  // Safe formatting for dates & times
   const formatDateTime = (isoString: string | Date) => {
     if (!isoString) return { date: "N/A", time: "N/A" };
     const d = new Date(isoString);
@@ -59,12 +58,14 @@ export default function Appointments() {
     update({ id, updateData });
   };
 
+  const handleDeleteAppointment = async (id: string) => {
+    await deleteAppointment({ id });
+  };
+
   return (
     <div className="w-full flex-1 bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs flex flex-col gap-4">
-      {/* Header section */}
       <AppointmentHeader />
 
-      {/* Controls / Filter Bar */}
       <AppointmentControlAndFilterBar
         search={search}
         setSearch={setSearch}
@@ -72,9 +73,7 @@ export default function Appointments() {
         setSort={setSort}
       />
 
-      {/* Appointments List State Rendering */}
       <div className="flex-1 overflow-y-auto space-y-3 min-h-55">
-        {/* 1. Loading State */}
         {appointmentsIsLoading && (
           <div className="h-48 flex flex-col items-center justify-center gap-2 text-slate-400">
             <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
@@ -82,7 +81,6 @@ export default function Appointments() {
           </div>
         )}
 
-        {/* 2. Error State */}
         {appointmentsIsError && !appointmentsIsLoading && (
           <AppointmentErrorState
             message={appointmentsError?.message}
@@ -90,14 +88,12 @@ export default function Appointments() {
           />
         )}
 
-        {/* 3. Empty State */}
         {!appointmentsIsLoading &&
           !appointmentsIsError &&
           (!appointments || appointments.length === 0) && (
             <AppointmentListEmptyState />
           )}
 
-        {/* 4. Success State (Data List) */}
         {!appointmentsIsLoading &&
           !appointmentsIsError &&
           appointments &&
@@ -125,6 +121,7 @@ export default function Appointments() {
                 time={time}
                 onUpdateStatus={handleUpdateStatus}
                 isUpdating={updateIsLoading}
+                onDelete={handleDeleteAppointment}
               />
             );
           })}
