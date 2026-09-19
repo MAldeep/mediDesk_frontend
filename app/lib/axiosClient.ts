@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useAuthStore } from "../stores/useAuthStore";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+const API_URL =
+  `${process.env.NEXT_PUBLIC_API_URL}/api` || "http://localhost:5000/api";
 
 export const publicApi = axios.create({
   baseURL: API_URL,
