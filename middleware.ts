@@ -7,25 +7,13 @@ const STAFF_ROUTES = ["/dashboard/staff"];
 const AUTH_ROUTES = ["/login", "/register"];
 
 const JWT_SECRET_ACCESS = new TextEncoder().encode(
-  process.env.JWT_ACCESS_SECRET,
-);
-const JWT_SECRET_REFRESH = new TextEncoder().encode(
-  process.env.JWT_REFRESH_SECRET,
+  process.env.JWT_ACCESS_SECRET || "",
 );
 
 async function verifyAccessToken(token: string) {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET_ACCESS);
-    return payload as { role?: string; id?: string };
-  } catch {
-    return null;
-  }
-}
-
-async function verifyRefreshToken(token: string) {
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET_REFRESH);
-    return payload as { id?: string };
+    return payload as { id?: string; role?: string };
   } catch {
     return null;
   }
@@ -35,17 +23,11 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const accessToken = request.cookies.get("accessToken")?.value;
-  const refreshToken = request.cookies.get("refreshToken")?.value;
-
   const accessPayload = accessToken
     ? await verifyAccessToken(accessToken)
     : null;
-  const refreshPayload =
-    !accessPayload && refreshToken
-      ? await verifyRefreshToken(refreshToken)
-      : null;
 
-  const isAuthenticated = Boolean(accessPayload || refreshPayload);
+  const isAuthenticated = Boolean(accessPayload);
   const userRole = accessPayload?.role;
 
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));

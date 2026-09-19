@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/app/stores/useAuthStore";
 import { api } from "@/app/lib/axiosClient";
+import Cookies from "js-cookie";
 
 export default function AuthProvider({
   children,
@@ -18,23 +19,33 @@ export default function AuthProvider({
 
     const initAuth = async () => {
       try {
+        const cookieToken = Cookies.get("accessToken");
         const response = await api.get("/auth/me");
         const user = response.data?.data?.user || response.data?.user;
-
-        const currentToken = useAuthStore.getState().accessToken;
+        const token =
+          response.data?.data?.accessToken ||
+          response.data?.accessToken ||
+          cookieToken;
 
         if (isMounted) {
-          if (user && currentToken) {
-            setAuth(user, currentToken);
+          if (user && token) {
+            setAuth(user, token);
+            Cookies.set("accessToken", token, {
+              expires: 1,
+              secure: true,
+              sameSite: "strict",
+            });
           } else if (user) {
             useAuthStore.setState({ user });
           } else {
             clearAuth();
+            Cookies.remove("accessToken");
           }
         }
       } catch (error) {
         if (isMounted) {
           clearAuth();
+          Cookies.remove("accessToken");
         }
       } finally {
         if (isMounted) {
