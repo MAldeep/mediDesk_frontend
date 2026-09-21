@@ -64,6 +64,8 @@ export default function NewAppointment() {
     defaultValues: {
       status: "scheduled",
       durationMinutes: 30,
+      procedure: "",
+      notes: "",
     },
   });
 
@@ -338,7 +340,42 @@ export default function NewAppointment() {
                 )}
               </div>
             </div>
+            {/* --- Procedure Field (Required) --- */}
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-slate-700">
+                Appointment Procedure <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                {...register("procedure")}
+                placeholder="e.g., Dental Cleaning, Root Canal, Checkup"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-slate-900 bg-white shadow-sm"
+              />
+              {errors.procedure && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.procedure.message}
+                </p>
+              )}
+            </div>
 
+            {/* --- Notes Field (Optional) --- */}
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-slate-700">
+                Notes{" "}
+                <span className="text-slate-400 font-normal">(Optional)</span>
+              </label>
+              <textarea
+                {...register("notes")}
+                rows={3}
+                placeholder="Add any medical notes or special instructions..."
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-slate-900 bg-white shadow-sm resize-none"
+              />
+              {errors.notes && (
+                <p className="text-sm text-red-600 mt-1">
+                  {errors.notes.message}
+                </p>
+              )}
+            </div>
             {/* Action Buttons */}
             <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
               <button

@@ -9,6 +9,8 @@ export interface Appointments {
   date: Date;
   status: AppointmentStatus;
   durationMinutes: number;
+  procedure: string;
+  notes?: string;
   createdBy: User;
   createdAt: Date;
   updatedAt: Date;

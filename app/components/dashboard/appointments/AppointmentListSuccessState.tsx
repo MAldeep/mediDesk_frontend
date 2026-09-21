@@ -14,7 +14,7 @@ interface Props {
   getStatusBadge: (status: string) => string;
   onUpdateStatus: (id: string, newStatus: AppointmentStatus) => void;
   isUpdating: boolean;
-  onDelete: (id: string) => Promise<void>; // أصبحت ترجع Promise
+  onDelete: (id: string) => Promise<void>;
 }
 
 export default function AppointmentListSuccessState({
@@ -34,8 +34,8 @@ export default function AppointmentListSuccessState({
   const handleConfirmDelete = async () => {
     try {
       setIsDeleting(true);
-      await onDelete(apt._id); // انتظر حتى ينتهي الـ API والـ Refetch
-      setIsDeleteModalOpen(false); // قفل المودال بعد النجاح فوراً
+      await onDelete(apt._id);
+      setIsDeleteModalOpen(false);
     } catch (error) {
       console.error("Failed to delete appointment:", error);
     } finally {
@@ -46,21 +46,43 @@ export default function AppointmentListSuccessState({
   return (
     <>
       <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-100 hover:border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition-all">
-        {/* Patient & Doctor Info */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs shrink-0">
+        {/* Patient, Doctor, Procedure & Notes Info */}
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
             <User className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-slate-800">{patientName}</h4>
-            {doctorName && (
-              <p className="text-[11px] text-slate-500">Dr. {doctorName}</p>
+            <div className="flex items-center gap-2">
+              <h4 className="text-xs font-bold text-slate-800">
+                {patientName}
+              </h4>
+              {doctorName && (
+                <span className="text-[11px] text-slate-500">
+                  • Dr. {doctorName}
+                </span>
+              )}
+            </div>
+
+            {/* Procedure Badge */}
+            {apt.procedure && (
+              <div className="mt-1">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                  {apt.procedure}
+                </span>
+              </div>
+            )}
+
+            {/* Optional Notes */}
+            {apt.notes && (
+              <p className="text-[11px] text-slate-400 mt-1 italic line-clamp-1">
+                Note: {apt.notes}
+              </p>
             )}
           </div>
         </div>
 
         {/* Timing, Status & Actions */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
           <div className="text-right hidden sm:block">
             <p className="text-xs font-semibold text-slate-700 flex items-center gap-1 justify-end">
               <Clock className="w-3 h-3 text-slate-400" />

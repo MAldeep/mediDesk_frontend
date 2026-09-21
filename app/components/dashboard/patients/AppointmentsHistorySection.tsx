@@ -1,11 +1,28 @@
+"use client";
+
 import { Patient } from "@/app/types/patient";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, FileText, Stethoscope } from "lucide-react";
+
 interface AppointmentHistoryProps {
   patient: Patient;
 }
+
 export default function AppointmentsHistorySection({
   patient,
 }: AppointmentHistoryProps) {
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      case "scheduled":
+        return "bg-blue-50 text-blue-700 border-blue-200";
+      case "cancelled":
+        return "bg-rose-50 text-rose-700 border-rose-200";
+      default:
+        return "bg-slate-100 text-slate-700 border-slate-200";
+    }
+  };
+
   return (
     <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
       <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
@@ -23,21 +40,63 @@ export default function AppointmentsHistorySection({
       </div>
 
       {patient.appointments && patient.appointments.length > 0 ? (
-        <div className="space-y-2 pt-1">
+        <div className="space-y-3 pt-1">
           {patient.appointments.map((apt, index) => (
             <div
-              key={apt._id}
-              className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50/50 text-xs"
+              key={apt._id || index}
+              className="p-4 rounded-xl border border-slate-100 hover:border-slate-200 bg-slate-50/50 hover:bg-slate-50 transition-all space-y-2.5"
             >
-              <div className="flex items-center gap-3">
-                <Clock className="w-4 h-4 text-slate-400" />
-                <span className="font-medium text-slate-700">
+              {/* Row 1: Visit Counter & Status Badge */}
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
                   Visit #{index + 1}
                 </span>
+                <span
+                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold border capitalize ${getStatusBadge(
+                    apt.status,
+                  )}`}
+                >
+                  {apt.status}
+                </span>
               </div>
-              <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-200 text-slate-700 capitalize">
-                {apt.status}
-              </span>
+
+              {/* Row 2: Date & Time Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600 pt-1 border-t border-slate-200/50">
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span>
+                    {apt.date ? new Date(apt.date).toLocaleDateString() : "N/A"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span>
+                    {apt.date.toString() || "N/A"}{" "}
+                    {apt.durationMinutes ? `(${apt.durationMinutes} min)` : ""}
+                  </span>
+                </div>
+              </div>
+
+              {/* Row 3: Procedure Badge */}
+              {apt.procedure && (
+                <div className="flex items-center gap-1.5 text-xs pt-1">
+                  <Stethoscope className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                  <span className="font-medium text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100 text-[11px]">
+                    {apt.procedure}
+                  </span>
+                </div>
+              )}
+
+              {/* Row 4: Notes (if available) */}
+              {apt.notes && (
+                <div className="flex items-start gap-1.5 text-xs pt-1 text-slate-500 bg-white/80 p-2.5 rounded-lg border border-slate-100">
+                  <FileText className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
+                  <p className="italic text-[11px] leading-relaxed">
+                    {apt.notes}
+                  </p>
+                </div>
+              )}
             </div>
           ))}
         </div>
