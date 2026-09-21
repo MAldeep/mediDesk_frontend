@@ -47,7 +47,8 @@ export const useAppointment = (initialParams?: GetParams) => {
       updateData: AppointmentStatus;
     }) => appointmentServices.updateStatus(id, updateData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments", "patients"] });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["patients"] });
     },
   });
   const deleteMutation = useMutation({
