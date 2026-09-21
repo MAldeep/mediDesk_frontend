@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import AppointmentsHistorySection from "@/app/components/dashboard/patients/AppointmentsHistorySection";
 import BackNavigation from "@/app/components/dashboard/patients/BackNavigation";
 import DeletePatientBtn from "@/app/components/dashboard/patients/DeletePatientBtn";
@@ -9,6 +10,7 @@ import { usePatients } from "@/app/hooks/patients/usePatients";
 import { useAuthStore } from "@/app/stores/useAuthStore";
 import { Loader2, AlertCircle } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useAppointment } from "@/app/hooks/appointments/useAppointment";
 
 export default function PatientPage() {
   const params = useParams();
@@ -17,7 +19,14 @@ export default function PatientPage() {
     undefined,
     id,
   );
+
+  const { update } = useAppointment();
+  const [updatingAppointmentId, setUpdatingAppointmentId] = useState<
+    string | null
+  >(null);
+
   const userRole = useAuthStore((state) => state.user)?.role;
+
   if (getOneIsLoading) {
     return (
       <div className="min-h-screen bg-slate-50/50 flex flex-col items-center justify-center p-6 space-y-3">
@@ -28,6 +37,7 @@ export default function PatientPage() {
       </div>
     );
   }
+
   if (getOneIsError || !patient) {
     return (
       <div className="min-h-screen bg-slate-50/50 p-6 md:p-8 space-y-4">
@@ -47,17 +57,32 @@ export default function PatientPage() {
     <div className="min-h-screen bg-slate-50/50 p-6 md:p-8 space-y-6">
       {/* Back Navigation & Actions */}
       <BackNavigation userRole={userRole} />
+
       {/* Main Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Personal Info Card */}
         <PersonalInfoCard patient={patient} />
+
         {/* Right Column: Scans & Medical Records + Appointments */}
         <div className="lg:col-span-2 space-y-6">
           {/* Scans & Radiology Section Placeholder */}
           <ScansRadiologySection patient={patient} />
 
           {/* Appointments History Section */}
-          <AppointmentsHistorySection patient={patient} />
+          <AppointmentsHistorySection
+            patient={patient}
+            onUpdateStatus={(appointmentId, newStatus) => {
+              setUpdatingAppointmentId(appointmentId);
+              update(
+                { id: appointmentId, updateData: newStatus },
+                {
+                  onSettled: () => setUpdatingAppointmentId(null),
+                },
+              );
+            }}
+            updatingId={updatingAppointmentId}
+          />
+
           <DeletePatientBtn />
         </div>
       </div>
