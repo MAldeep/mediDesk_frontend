@@ -15,10 +15,13 @@ import { useAppointment } from "@/app/hooks/appointments/useAppointment";
 export default function PatientPage() {
   const params = useParams();
   const id = params?.id as string;
-  const { getOneError, getOneIsError, getOneIsLoading, patient } = usePatients(
-    undefined,
-    id,
-  );
+  const {
+    getOneError,
+    getOneIsError,
+    getOneIsLoading,
+    patient,
+    patientRefetch,
+  } = usePatients(undefined, id);
 
   const { update } = useAppointment();
   const [updatingAppointmentId, setUpdatingAppointmentId] = useState<
@@ -76,6 +79,9 @@ export default function PatientPage() {
               update(
                 { id: appointmentId, updateData: newStatus },
                 {
+                  onSuccess: () => {
+                    patientRefetch();
+                  },
                   onSettled: () => setUpdatingAppointmentId(null),
                 },
               );

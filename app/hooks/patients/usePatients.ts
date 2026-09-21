@@ -113,6 +113,7 @@ export const usePatients = (initialParams?: GetParams, patientId?: string) => {
     getOneIsLoading: getOneById.isLoading,
     getOneError: getOneById.error,
     getOneIsError: getOneById.isError,
+    patientRefetch: getOneById.refetch,
     // update
     update: updatePatientMutation.mutate,
     updateIsLoading: updatePatientMutation.isPending,
