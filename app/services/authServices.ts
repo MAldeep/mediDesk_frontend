@@ -53,4 +53,17 @@ export const authServices = {
     });
     return response.data;
   },
+  forgotPassword: async (email: string) => {
+    const response = await publicApi.post("/auth/forgot-password", {
+      email: email,
+    });
+    return response.data.message;
+  },
+  resetPassword: async (token: string, password: string) => {
+    const response = await publicApi.post(
+      `/auth/reset-password/${token}`,
+      password,
+    );
+    return response.data.message;
+  },
 };

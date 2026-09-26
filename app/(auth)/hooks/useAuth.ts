@@ -45,6 +45,13 @@ export const useAuth = () => {
       token: string;
     }) => authServices.setPassword(newPassword, token),
   });
+  const forgotPasswordMutation = useMutation({
+    mutationFn: (email: string) => authServices.forgotPassword(email),
+  });
+  const resetPasswordMutation = useMutation({
+    mutationFn: ({ password, token }: { password: string; token: string }) =>
+      authServices.resetPassword(token, password),
+  });
   return {
     // register
     registerUser: registerMutation.mutate,
@@ -71,5 +78,15 @@ export const useAuth = () => {
     setPassIsLoading: setPasswordMutation.isPending,
     setPassIsError: setPasswordMutation.isError,
     setPassError: setPasswordMutation.error,
+    // forgot password
+    forgotPassword: forgotPasswordMutation.mutate,
+    forgotPasswordIsLoading: forgotPasswordMutation.isPending,
+    forgotPasswordIsError: forgotPasswordMutation.isError,
+    forgotPasswordError: forgotPasswordMutation.error,
+    // reset password
+    resetPassword: resetPasswordMutation.mutate,
+    resetIsLoading: resetPasswordMutation.isPending,
+    resetIsError: resetPasswordMutation.isError,
+    resetError: resetPasswordMutation.error,
   };
 };
