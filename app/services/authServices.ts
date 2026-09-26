@@ -36,6 +36,7 @@ export const authServices = {
       return response.data;
     } finally {
       Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
     }
   },
 
