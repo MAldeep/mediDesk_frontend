@@ -47,8 +47,7 @@ export async function middleware(request: NextRequest) {
     isAdminRoute ||
     isDoctorRoute ||
     isStaffRoute ||
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/appointments");
+    pathname.startsWith("/dashboard");
 
   if (isProtectedRoute && !isAuthenticated) {
     const loginUrl = new URL("/login", request.url);
