@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Clock, User, Loader2, Trash2 } from "lucide-react";
 import type { Appointments, AppointmentStatus } from "@/app/types/appointments";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import PermissionGuard from "../../guards/PermissionGuard";
 
 interface Props {
   apt: Appointments;
@@ -122,14 +123,16 @@ export default function AppointmentListSuccessState({
           </div>
 
           {/* Delete Button */}
-          <button
-            type="button"
-            onClick={() => setIsDeleteModalOpen(true)}
-            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
-            title="Delete Appointment"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
+          <PermissionGuard allowedRoles={["admin", "staff"]}>
+            <button
+              type="button"
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+              title="Delete Appointment"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </PermissionGuard>
         </div>
       </div>
 
