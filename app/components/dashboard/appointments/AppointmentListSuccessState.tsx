@@ -5,6 +5,8 @@ import { Clock, User, Loader2, Trash2 } from "lucide-react";
 import type { Appointments, AppointmentStatus } from "@/app/types/appointments";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import PermissionGuard from "../../guards/PermissionGuard";
+import Link from "next/link";
+import { usePermission } from "@/app/hooks/usePermissions";
 
 interface Props {
   apt: Appointments;
@@ -31,7 +33,7 @@ export default function AppointmentListSuccessState({
 }: Props) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
+  const { userRole } = usePermission();
   const handleConfirmDelete = async () => {
     try {
       setIsDeleting(true);
@@ -57,6 +59,7 @@ export default function AppointmentListSuccessState({
               <h4 className="text-xs font-bold text-slate-800">
                 {patientName}
               </h4>
+
               {doctorName && (
                 <span className="text-[11px] text-slate-500">
                   • Dr. {doctorName}
@@ -64,7 +67,6 @@ export default function AppointmentListSuccessState({
               )}
             </div>
 
-            {/* Procedure Badge */}
             {apt.procedure && (
               <div className="mt-1">
                 <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-100">
@@ -73,15 +75,23 @@ export default function AppointmentListSuccessState({
               </div>
             )}
 
-            {/* Optional Notes */}
             {apt.notes && (
               <p className="text-[11px] text-slate-400 mt-1 italic line-clamp-1">
                 Note: {apt.notes}
               </p>
             )}
+
+            <Link
+              href={`/dashboard/${userRole}/patients/${apt.patient._id}`}
+              className="group inline-flex items-center gap-1 mt-1.5 text-[10px] font-semibold text-indigo-500 hover:text-indigo-700 transition-colors"
+            >
+              View Patient
+              <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+                →
+              </span>
+            </Link>
           </div>
         </div>
-
         {/* Timing, Status & Actions */}
         <div className="flex items-center gap-3 sm:gap-4 shrink-0">
           <div className="text-right hidden sm:block">
